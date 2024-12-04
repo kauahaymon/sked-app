@@ -1,7 +1,7 @@
-import { 
-    createContext, 
-    useEffect, 
-    useState 
+import {
+    createContext,
+    useEffect,
+    useState
 } from "react"
 
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,10 +12,10 @@ type PerformanceItem = {
 };
 
 type UpdateProps = {
-    theme?: string; 
-    room?: string; 
-    date?: Date; 
-    time?: Date; 
+    theme?: string;
+    room?: string;
+    date?: Date;
+    time?: Date;
     description?: string;
     performance?: PerformanceItem[]
     considerations?: string
@@ -74,7 +74,7 @@ export default function ActivityProvider({ children }: any) {
             const updatedList = prevState.map((item: any) =>
                 item.id === id ? { ...item, ...updates } : item
             )
-    
+
             storeDataList(updatedList)
             return updatedList
         });
@@ -188,6 +188,11 @@ export default function ActivityProvider({ children }: any) {
         return activity.filter((item: any) => item.completed).length
     }
 
+    const getTheme = (id: number) => {
+        const activityItem = activity.find((item: any) => item.id === id);
+        return activityItem ? activityItem.theme : null
+    }
+
     const getDescription = (id: number) => {
         const activityItem = activity.find((item: any) => item.id === id);
         return activityItem ? activityItem.description : null
@@ -253,6 +258,7 @@ export default function ActivityProvider({ children }: any) {
                 roomList,
                 deleteRoom,
                 updateActivity,
+                getTheme,
                 getDescription,
                 getConsiderations,
                 getPerformance

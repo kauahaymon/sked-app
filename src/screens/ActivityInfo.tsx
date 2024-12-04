@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useContext, useRef } from "react"
-import { 
-    Octicons, 
-    MaterialIcons,  
-    AntDesign, 
-    Entypo, 
-    Foundation 
+import {
+    Octicons,
+    MaterialIcons,
+    AntDesign,
+    MaterialCommunityIcons
 } from '@expo/vector-icons'
 
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -29,14 +28,15 @@ import {
     Modal,
     KeyboardAvoidingView,
     Platform,
-    ScrollView
+    ScrollView,
+    Keyboard
 } from "react-native"
 
 export default function ActivityInfo() {
     const navigation = useNavigation()
     const { params }: any = useRoute()
 
-    const { roomList, deleteRoom, updateActivity, getDescription, getConsiderations, getPerformance, activity }: any = useContext(ActivityContext)
+    const { roomList, deleteRoom, updateActivity, getTheme, getDescription, getConsiderations, getPerformance }: any = useContext(ActivityContext)
 
     const [showRoomMenu, setShowRoomMenu] = useState(false)
     const [showDatePicker, setShowDatePicker] = useState(false)
@@ -59,7 +59,10 @@ export default function ActivityInfo() {
     const time = moment(updatedTime).format('HH:mm')
 
     const [isModalOpen, setIsModalOpen] = useState(false)
-    const [inputHeight, setInputHeight] = useState(30)
+
+    const textDesc = getDescription(params.id)
+    const maxLength = 70
+    const truncatedText = textDesc.length > maxLength ? textDesc.slice(0, maxLength) + "..." : textDesc;
 
     const inputDescRef = useRef<any>(null)
     const commentRef = useRef<any>(null)
@@ -155,6 +158,10 @@ export default function ActivityInfo() {
         setStudentData(studentData.filter((student: any) => student.id !== id))
     }
 
+    function handleBlur() {
+        setShowInput(false)
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="transparent" translucent />
@@ -202,18 +209,35 @@ export default function ActivityInfo() {
                                 onChange={handleTimeChange}
                             />
                         )}
+
                         <TouchableOpacity activeOpacity={0.7} onPress={toggleModalVisibility}>
-                            <ItemArea icon='menu-book' title="Class Description" param={getDescription(params.id) === '' ?
-                                <Foundation name="pencil" size={20} color="#7B7BD4FF" />
-                                :
-                                <Entypo name="book" size={20} color="#7B7BD4FF" />} />
+                            <ItemArea
+                                icon="menu-book"
+                                title="Class Description"
+                                param={
+                                    getDescription(params.id) === '' ?
+                                        <MaterialCommunityIcons name="book-plus" size={19} color="#05AF2AFF" /> :
+                                        <MaterialCommunityIcons name="book-edit" size={19} color="#7B7BD4FF" />
+                                }
+                            />
+                            {
+
+                                params.id !== '' && truncatedText ? (
+                                    <Text style={{ marginLeft: 43, marginTop: 7, marginBottom: 10, fontSize: 15, color: '#7c808f' }}>
+                                        {truncatedText}
+                                    </Text>
+                                ) : null}
+
                         </TouchableOpacity>
-    
+
+
                         <TouchableOpacity activeOpacity={0.7} onPress={() => setShowInput(!showInput)}>
-                            <ItemArea icon="groups" title="Student Performance" param={showInput ?
-                                <Entypo name="chevron-up" size={20} color="#7B7BD4FF" />
-                                :
-                                <Entypo name="chevron-down" size={20} color="#7B7BD4FF" />} />
+                            <ItemArea
+                                icon="groups"
+                                title="Student Performance"
+                                param={showInput ?
+                                    <MaterialIcons name="playlist-add-check" size={19} color="#7B7BD4FF" /> :
+                                    <MaterialIcons name="person-add-alt-1" size={19} color="#05AF2AFF" />} />
                         </TouchableOpacity>
                         <View>
                             <FlatList
@@ -222,17 +246,17 @@ export default function ActivityInfo() {
                                 renderItem={({ item }) => (
                                     <View style={{ width: '100%', flexDirection: 'row' }}>
                                         <View style={styles.studentView}>
-                                            <Octicons name="dot-fill" size={11} color="#555" />
+                                            <Octicons name="dot-fill" size={13} color="#5C689EFF" />
                                             <Text style={styles.itemText}>{item.text}</Text>
                                         </View>
                                         <TouchableOpacity onPress={() => deleteStudent(item.id)} style={styles.deleteStudent}>
-                                            <AntDesign name="close" size={12} color="#555" />
+                                            <AntDesign name="close" size={13} color="#555" />
                                         </TouchableOpacity>
                                     </View>
                                 )}
                             />
                         </View>
-    
+
                         {showInput && (
                             <View style={styles.inputContainer}>
                                 <Octicons name="dot-fill" size={13} color="#5C689EFF" />
@@ -244,10 +268,11 @@ export default function ActivityInfo() {
                                     autoFocus={true}
                                     onChangeText={setNewText}
                                     onSubmitEditing={handleAddItem}
+                                    onBlur={handleBlur}
                                 />
                             </View>
                         )}
-    
+
                         <ItemArea icon='description' title="Considerations" param={'none'} />
                         <View style={styles.consView}>
                             <TextInput placeholder="Type your considerations..."
@@ -284,7 +309,7 @@ export default function ActivityInfo() {
                                 />
                             </View>
                         )}
-    
+
                         {isModalOpen && (
                             <Modal
                                 visible={isModalOpen}
@@ -313,7 +338,7 @@ export default function ActivityInfo() {
                                                     placeholder="Class description"
                                                     onChangeText={(text) => handleDescChange(params.id, text)}
                                                     multiline
-                                                    numberOfLines={250}
+                                                    numberOfLines={200}
                                                     style={[styles.inputDesc]}
                                                 />
                                             </View>
@@ -326,7 +351,7 @@ export default function ActivityInfo() {
                 </View>
             </ScrollView>
         </SafeAreaView>
-    )    
+    )
 }
 
 const styles = StyleSheet.create({
@@ -406,16 +431,17 @@ const styles = StyleSheet.create({
         borderEndStartRadius: 20,
     },
     closeIcon: {
-        marginBottom: 10,
+        height: 30,
+        width: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
         marginLeft: -10,
     },
     inputDesc: {
         fontSize: 17,
-        height: '100%',
+        height: '200%',
         textAlignVertical: 'top',
-        padding: 10,
         lineHeight: 24,
-        paddingHorizontal: 0,
     },
     inputDescBox: {
         flex: 1,
@@ -447,14 +473,14 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 8,
         height: 40,
-        fontSize: 16,
+        fontSize: 15,
         color: '#555',
         marginLeft: 6,
     },
     itemText: {
         fontSize: 15,
         marginLeft: 10,
-        color: '#555',
+        color: '#7c808f',
     },
     deleteStudent: {
         width: 35,
@@ -465,10 +491,10 @@ const styles = StyleSheet.create({
     consInput: {
         height: 150,
         textAlignVertical: 'top',
-        fontSize: 16,
-        color: '#555',
-        
+        fontSize: 15,
+        color: '#7c808f',
+
         borderColor: '#F0F0F0FF',
-        paddingLeft: 7,
+        paddingLeft: 4,
     }
 })
