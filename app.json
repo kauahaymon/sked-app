@@ -8,9 +8,9 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",  
-      "resizeMode": "contain",        
-      "backgroundColor": "#5B5A97FF" 
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#5B5A97FF"
     },
     "ios": {
       "supportsTablet": true
@@ -24,6 +24,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "753591eb-6439-44db-9ec0-aa8566a0398e"
+      }
     }
   }
 }

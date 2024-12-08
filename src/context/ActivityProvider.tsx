@@ -60,8 +60,7 @@ export default function ActivityProvider({ children }: any) {
             theme,
             room,
             date,
-            time,
-            completed: false,
+            time, 
         }
         const updatedState = [...activity, newActivity]
         setActivity(updatedState)

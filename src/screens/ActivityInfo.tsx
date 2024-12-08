@@ -60,9 +60,11 @@ export default function ActivityInfo() {
 
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    const textDesc = getDescription(params.id)
+    const textDesc = getDescription(params.id) || ''
     const maxLength = 70
-    const truncatedText = textDesc.length > maxLength ? textDesc.slice(0, maxLength) + "..." : textDesc;
+    const truncatedText = textDesc.length > maxLength
+        ? `${textDesc.slice(0, maxLength)}...`
+        : textDesc;
 
     const inputDescRef = useRef<any>(null)
     const commentRef = useRef<any>(null)
@@ -220,13 +222,19 @@ export default function ActivityInfo() {
                                         <MaterialCommunityIcons name="book-edit" size={19} color="#7B7BD4FF" />
                                 }
                             />
-                            {
-
-                                params.id !== '' && truncatedText ? (
-                                    <Text style={{ marginLeft: 43, marginTop: 7, marginBottom: 10, fontSize: 15, color: '#7c808f' }}>
-                                        {truncatedText}
-                                    </Text>
-                                ) : null}
+                            {params.id !== "" && truncatedText ? (
+                                <Text
+                                    style={{
+                                        marginLeft: 45,
+                                        marginTop: 7,
+                                        marginBottom: 10,
+                                        fontSize: 15,
+                                        color: '#7c808f'
+                                    }}
+                                >
+                                    {truncatedText}
+                                </Text>
+                            ) : null}
 
                         </TouchableOpacity>
 

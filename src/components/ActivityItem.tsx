@@ -10,7 +10,7 @@ import {
 
 import moment from 'moment'
 import { format } from 'date-fns'
-import { FontAwesome5 } from "@expo/vector-icons"
+import { FontAwesome5, FontAwesome6, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { Feather } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
@@ -29,7 +29,7 @@ type Props = {
 };
 
 export default function ActivityItem(props: Props) {
-    const { toggleActivityCompletion, deleteActivity, moveToArchived }: any = useContext(ActivityContext)
+    const { toggleActivityCompletion, deleteActivity, moveToArchived, getDescription, getConsiderations, getPerformance }: any = useContext(ActivityContext)
     const formattedDate = moment(props.date).format("DD/MM")
     const formattedTime = `${format(props.time, "HH")}h`
     const { navigate } = useNavigation();
@@ -114,7 +114,16 @@ export default function ActivityItem(props: Props) {
                         <View style={styles.infos}>
                             <Text style={styles.subtitle}>
                                 {props.room} | {formattedTime}
+                                {getDescription(props.id) || getConsiderations(props.id) ? (
+                                    <> | <Feather name="file-text" size={10} color="#7c808f" /></>
+                                ) : null}
+                                {getPerformance(props.id) ? (
+                                    getPerformance(props.id) !== '' && (
+                                        <>  <MaterialCommunityIcons name="account-group" size={12} color="#7c808f" /></>
+                                    )
+                                ) : null}
                             </Text>
+
                             <Text style={[styles.subtitle, { color: GlobalStyles.colors.blue }]}>{labelDate}</Text>
                         </View>
                     </View>
@@ -135,7 +144,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         flex: 1,
         paddingVertical: 10,
-        paddingRight: 70,
+        paddingRight: 75,
     },
     infos: {
         flex: 1,
