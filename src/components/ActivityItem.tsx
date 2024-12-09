@@ -10,7 +10,7 @@ import {
 
 import moment from 'moment'
 import { format } from 'date-fns'
-import { FontAwesome5, FontAwesome6, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
+import { AntDesign, FontAwesome5, FontAwesome6, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons"
 import { Feather } from "@expo/vector-icons"
 import { useNavigation } from "@react-navigation/native"
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
@@ -113,16 +113,23 @@ export default function ActivityItem(props: Props) {
                         <Text style={[styles.title, doneStyle]}>{props.theme}</Text>
                         <View style={styles.infos}>
                             <Text style={styles.subtitle}>
-                                {props.room} | {formattedTime}
-                                {getDescription(props.id) || getConsiderations(props.id) ? (
-                                    <> | <Feather name="file-text" size={10} color="#7c808f" /></>
+                                {props.room} {formattedTime}
+                                {getDescription(props.id) ||
+                                    getPerformance(props.id) && getPerformance(props.id).length > 0 ||
+                                    getConsiderations(props.id) ? (
+                                    <> |</>
                                 ) : null}
-                                {getPerformance(props.id) ? (
-                                    getPerformance(props.id) !== '' && (
-                                        <>  <MaterialCommunityIcons name="account-group" size={12} color="#7c808f" /></>
-                                    )
+                                {getDescription(props.id) ? (
+                                    <> <Feather name="book" size={10} color="#7c808f" /></>
+                                ) : null}
+                                {getPerformance(props.id) && getPerformance(props.id).length > 0 ? (
+                                    <> <MaterialCommunityIcons name="account-multiple-outline" size={12} color="#7c808f" /></>
+                                ) : null}
+                                {getConsiderations(props.id) ? (
+                                    <> <Feather name="file-text" size={10} color="#7c808f" /></>
                                 ) : null}
                             </Text>
+
 
                             <Text style={[styles.subtitle, { color: GlobalStyles.colors.blue }]}>{labelDate}</Text>
                         </View>

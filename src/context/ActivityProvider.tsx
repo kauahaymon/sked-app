@@ -86,6 +86,23 @@ export default function ActivityProvider({ children }: any) {
         storeDataList(updatedState)
     }
 
+    // Delete a student from list
+    function deleteStudentItem(activityId: number, studentId: number) {
+        setActivity((prevActivities: any) =>
+            prevActivities.map((activity: any) => {
+                if (activity.id === activityId) {
+                    return {
+                        ...activity,
+                        performance: activity.performance.filter(
+                            (item: any) => item.id !== studentId
+                        )
+                    };
+                }
+                return activity;
+            })
+        );
+    }
+
     function addNewRoom(newRoom: any) {
         const updatedRooms = [...roomList, newRoom]
         setRoomList(updatedRooms)
@@ -257,6 +274,7 @@ export default function ActivityProvider({ children }: any) {
                 roomList,
                 deleteRoom,
                 updateActivity,
+                deleteStudentItem,
                 getTheme,
                 getDescription,
                 getConsiderations,

@@ -36,7 +36,7 @@ export default function ActivityInfo() {
     const navigation = useNavigation()
     const { params }: any = useRoute()
 
-    const { roomList, deleteRoom, updateActivity, getTheme, getDescription, getConsiderations, getPerformance }: any = useContext(ActivityContext)
+    const { roomList, deleteRoom, updateActivity, deleteStudentItem, getTheme, getDescription, getConsiderations, getPerformance }: any = useContext(ActivityContext)
 
     const [showRoomMenu, setShowRoomMenu] = useState(false)
     const [showDatePicker, setShowDatePicker] = useState(false)
@@ -120,6 +120,11 @@ export default function ActivityInfo() {
         }, 100);
     }
 
+    function deleteStudent(id: number) {
+        setStudentData(studentData.filter((student: any) => student.id !== id))
+        deleteStudentItem(params.id, id)
+    }
+
     useEffect(() => {
         const performanceData = getPerformance(params.id) || []
         setStudentData(performanceData)
@@ -154,10 +159,6 @@ export default function ActivityInfo() {
 
     function toggleModalVisibility() {
         setIsModalOpen(!isModalOpen)
-    }
-
-    function deleteStudent(id: number) {
-        setStudentData(studentData.filter((student: any) => student.id !== id))
     }
 
     function handleBlur() {
